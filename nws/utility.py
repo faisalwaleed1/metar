@@ -56,8 +56,8 @@ class Utility:
         """
         weather_records = data.replace("\n", " ").rstrip().split(" ")
         temperature = list(
-            filter(re.compile("[[M]*[\d]+/[M]*[\d]+").match, weather_records[1:])
-        )[-1]
+            filter(re.compile("^M{0,1}[\d]+\/M{0,1}[\d]+$").match, weather_records[1:])
+        )[0]
 
         wind = [record for record in weather_records[1:] if "KT" in record][0]
         return {

@@ -25,15 +25,15 @@ class ClientAPIView(APIView):
         if (station_code in cache and no_cache and no_cache != "1") or (station_code in cache and not no_cache):
             data = cache.get(station_code)
         else:
-            try:
-                response = requests.get(f"{os.environ['BASE_URL']}{station_code}.TXT")
-                if response.status_code == 200:
+            response = requests.get(f"{os.environ['BASE_URL']}{station_code}.TXT")
+            if response.status_code == 200:
+                try:
                     data = Utility.string_to_json(response.content.decode("utf-8"))
                     cache.set(station_code, data, timeout=300)
-                else:
-                    data = {"Request": "Not Found"}
-                    http_status = status.HTTP_400_BAD_REQUEST
-            except:
-                data = {"Request": "Data Invalid"}
-
+                except:
+                    data = {"Request": "Data Invalid"}
+            else:
+                data = {"Request": "Not Found"}
+                http_status = status.HTTP_400_BAD_REQUEST
+                
         return JsonResponse(data, safe=False, status=http_status)
